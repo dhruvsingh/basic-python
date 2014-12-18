@@ -1,4 +1,4 @@
-basic-python
+Basic-Python
 ============
 
-The repo contains some bbasic python programs for personal/public use
+The repo contains some python programs that I've written
