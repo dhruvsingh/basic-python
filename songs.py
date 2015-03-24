@@ -1,43 +1,32 @@
 from bs4 import BeautifulSoup
 
 import urllib2
+
+links = {}
+
 response = urllib2.urlopen('http://www.linkersweddingsolutions.com/weddingsongs/list-of-wedding-songs-from-hindi-movies.html')
 html = response.read()
-links = []
-rows = []
-
 soup = BeautifulSoup(html)
 
 table = soup.find('table', {'class': 'download'})
 
 for row in table.findAll('tr'):
     matter = row.findAll('td')
-    print 'matter is', matter.prettify()
+    link = matter[2].find('a')
+    key = str(matter[0].text.strip())
+    links[key] = str(link['href'].strip())
 
-"""
-rows.append(matter[0].contents)
-    links.append(matter[3])
-
-key = str(row[::1])
-    links[key] = row[::3]
-soup = soup.select('a[href^="http://www.mymp3singer.com/get.php?"]')
-for link in soup:
-    links.append(str(link['href']))
-
-response = urllib2.urlopen(links[0])
-html = response.read()
-
-print 'response is', response.info()
+# Code to download the songs in links above
 file_size_dl = 0
 
+for key, value in links:
+    response = urllib2.urlopen(value)
+    f = open(key, 'wb')
+    while True:
+        buffer = response.read(8192)
+        if not buffer:
+            break
 
-f = open('testFile.mp3', 'wb')
-while True:
-    buffer = response.read(8192)
-    if not buffer:
-        break
-
-    file_size_dl += len(buffer)
-    f.write(buffer)
-f.close()
-"""
+        file_size_dl += len(buffer)
+        f.write(buffer)
+    f.close()
